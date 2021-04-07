@@ -181,6 +181,9 @@ version = "0.1.0"
 dependencies = [
  "async-recursion",
  "fantoccini",
+ "rand",
+ "serde",
+ "serde_json",
  "structopt",
  "tokio",
  "url",

@@ -9,19 +9,20 @@ const DESCRIPTION_SELECTOR: &str = "div#jobDescriptionText";
 
 
 pub async fn process_job_detail_page(c: &mut Client, job_page_link: &str) -> FantocciniResult<Job> {
-	
+
 	c.goto(job_page_link)
 		.await
 		.expect(format!("Error while loading '{}' job page", job_page_link).as_str());
-	
+
+	let page_url = c.current_url().await?.to_string();
 	let title = load_element(c, TITLE_SELECTOR).await;
 	let company = load_element(c, COMPANY_SELECTOR).await;
 	let description = load_element(c, DESCRIPTION_SELECTOR).await;
-			
+
 	c.back().await?;
 
-	let job = Job::new(title, company, description);
-	
+	let job = Job::new(page_url, title, company, description);
+
 	Ok(job)
 }
 
