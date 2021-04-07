@@ -1,0 +1,1 @@
+pub type FantocciniResult<T> = Result<T, fantoccini::error::CmdError>;

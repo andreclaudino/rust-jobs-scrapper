@@ -1,0 +1,1 @@
+ A simple job web scrapper for rust.

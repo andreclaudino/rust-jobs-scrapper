@@ -1,0 +1,49 @@
+{
+	// Use o IntelliSense para saber mais sobre os atributos possíveis.
+	// Focalizar para exibir as descrições dos atributos existentes.
+	// Para obter mais informações, acesse: https://go.microsoft.com/fwlink/?linkid=830387
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"type": "lldb",
+			"request": "launch",
+			"name": "Debug executable 'fantoccini-test'",
+			"cargo": {
+				"args": [
+					"build",
+					"--bin=fantoccini-test",
+					"--package=fantoccini-test"
+				],
+				"filter": {
+					"name": "fantoccini-test",
+					"kind": "bin"
+				}
+			},
+			"args": [
+				"--category", "Healthcare",
+				"--job-title", "Medical Worker",
+				"--gecko-server", "http://0.0.0.0:4444"
+			],
+			"cwd": "${workspaceFolder}"
+		},
+		{
+			"type": "lldb",
+			"request": "launch",
+			"name": "Debug unit tests in executable 'fantoccini-test'",
+			"cargo": {
+				"args": [
+					"test",
+					"--no-run",
+					"--bin=fantoccini-test",
+					"--package=fantoccini-test"
+				],
+				"filter": {
+					"name": "fantoccini-test",
+					"kind": "bin"
+				}
+			},
+			"args": [],
+			"cwd": "${workspaceFolder}"
+		}
+	]
+}
