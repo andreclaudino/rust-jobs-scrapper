@@ -20,8 +20,9 @@
 				}
 			},
 			"args": [
-				"--category", "Healthcare",
-				"--job-title", "Medical Worker",
+				"--category", "Law Enforcement/Security",
+				"--job-title", "Security Officer",
+				"--output-folder", "output",
 				"--gecko-server", "http://0.0.0.0:4444"
 			],
 			"cwd": "${workspaceFolder}"

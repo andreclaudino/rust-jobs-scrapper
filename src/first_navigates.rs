@@ -6,7 +6,7 @@ use crate::utils::FantocciniResult;
 const EXPECTED_INDEED_COM: &str = "www.indeed.com";
 const BROWSE_JOBS_LABEL: &str = "Browse Jobs";
 
-pub async fn force_to_ideed_com(c: &mut Client, indeed_url: &str) -> FantocciniResult<()> {
+pub async fn force_to_ideed_com(mut c: Client, indeed_url: &str) -> FantocciniResult<Client> {
 	
 	c.goto(indeed_url).await?;
 	let expected_url = Url::parse(indeed_url)?;
@@ -18,19 +18,19 @@ pub async fn force_to_ideed_com(c: &mut Client, indeed_url: &str) -> FantocciniR
 			.expect(format!("Could not click {} link", EXPECTED_INDEED_COM).as_str());
      }
 
-	Ok(())
+	Ok(c)
 }
 
-pub async fn navigate_to_browse_jobs_page(c: &mut Client) -> FantocciniResult<()> {   
+pub async fn navigate_to_browse_jobs_page(mut c: Client) -> FantocciniResult<Client> {   
 	c.find(Locator::LinkText(BROWSE_JOBS_LABEL)).await
 		.expect(format!("Could not find {} link", BROWSE_JOBS_LABEL).as_str())
 		.click().await
 		.expect(format!("Could not click {} link", BROWSE_JOBS_LABEL).as_str());
 
-	Ok(())
+	Ok(c)
 }
 
-pub async fn navigate_to_category_page(c: &mut Client, category_title: &str) -> FantocciniResult<()> {
+pub async fn navigate_to_category_page(mut c: Client, category_title: &str) -> FantocciniResult<Client> {
 	
 	let category = 
 		c.find(Locator::LinkText(category_title))
@@ -41,10 +41,10 @@ pub async fn navigate_to_category_page(c: &mut Client, category_title: &str) -> 
 		.await
 		.expect(format!("Could not click '{}' category", category_title).as_str());
 
-	Ok(())
+	Ok(c)
 }
 
-pub async fn load_openings_page(c: &mut Client, job_title: &str) -> FantocciniResult<()> {
+pub async fn load_openings_page(mut c: Client, job_title: &str) -> FantocciniResult<Client> {
 	c.find(Locator::LinkText(job_title))
 		.await
 		.expect(format!("Could not find '{}' title", job_title).as_str())
@@ -52,5 +52,5 @@ pub async fn load_openings_page(c: &mut Client, job_title: &str) -> FantocciniRe
 		.await
 		.expect(format!("Could not click '{}' title", job_title).as_str());
 
-	Ok(())
+	Ok(c)
 }

@@ -15,6 +15,9 @@ pub struct Cli {
 	#[structopt(long="job-title")]
     pub job_title: String,
 
+	#[structopt(short="o", long="output-folder")]
+    pub output_folder: String,
+
 	#[structopt(long="indeed-url",
 				default_value=DEFAULT_INDEED_URL)]
 	pub indeed_url: String
