@@ -20,8 +20,9 @@
 				}
 			},
 			"args": [
-				"--category", "Law Enforcement/Security",
-				"--job-title", "Security Officer",
+				"--indeed-url", "https://br.indeed.com/",
+				"--category", "Hotelaria",
+				"--job-title", "Vagas de emprego: Camareira",
 				"--output-folder", "output",
 				"--gecko-server", "http://0.0.0.0:4444"
 			],

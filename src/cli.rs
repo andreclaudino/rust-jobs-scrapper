@@ -20,7 +20,8 @@ pub struct Cli {
 
 	#[structopt(long="indeed-url",
 				default_value=DEFAULT_INDEED_URL)]
-	pub indeed_url: String
+	pub indeed_url: String,
+
 }
 
 impl Cli {

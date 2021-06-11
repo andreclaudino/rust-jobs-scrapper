@@ -1,20 +1,19 @@
-use std::{thread::sleep, time::Duration};
 use rand::seq::SliceRandom;
 use std::sync::mpsc::Sender;
 
 use fantoccini::{Client, Locator};
-use crate::{job_entity::Job, job_page::process_job_detail_page, utils::FantocciniResult};
+use crate::{job_entity::Job, job_page::process_job_detail_page, utils::{FantocciniResult, refresh}};
 use async_recursion::async_recursion;
 
-const DATEPOST_SELECTOR: &str = "div#filter-dateposted";
-const FILTER_OPTION: &str = "Last 24 hours";
+const DATEPOST_SELECTOR: &str = r#"button[aria-controls="filter-dateposted-menu"]"#;
+const FILTER_OPTION_SELECTOR: &str = "ul#filter-dateposted-menu > li:first-of-type > a";
 const JOB_OPENING_SELECTOR: &str = "div.jobsearch-SerpJobCard > h2.title > a";
-const NEXT_PAGE_SELECTOR: &str = r#"nav[role="navigation"] > div > ul > li > a[aria-label="Next"]"#;
+const NEXT_PAGE_SELECTOR: &str = r#"div.pagination > ul.pagination-list > li:last-child > a"#;
 
 
 pub async fn set_date_filters(c: &mut Client) -> FantocciniResult<()> {
 	c.find(Locator::Css(DATEPOST_SELECTOR)).await?.click().await?;
-    c.find(Locator::LinkText(FILTER_OPTION)).await?.click().await?;
+    c.find(Locator::Css(FILTER_OPTION_SELECTOR)).await?.click().await?;
 
 	Ok(())
 }
@@ -46,12 +45,6 @@ pub async fn apply_filters(mut c: Client) -> FantocciniResult<Client> {
 	Ok(c)
 }
 
-pub async fn refresh(c: &mut Client) -> FantocciniResult<()> {
-	sleep(Duration::from_secs(2));
-	c.refresh().await
-}
-
-
 #[async_recursion]
 pub async fn process_openings_list_page(mut c: Client, tx: Sender<Vec<Job>>) -> FantocciniResult<()>{
     let mut job_page_links = load_opening_titles(&mut c).await?;
@@ -61,9 +54,11 @@ pub async fn process_openings_list_page(mut c: Client, tx: Sender<Vec<Job>>) -> 
 
     for job_page_link in job_page_links {
         let job = process_job_detail_page(&mut c, job_page_link.as_str()).await?;
+		println!("{:?}", job);
 		jobs.push(job);
     }
 
+	println!("Pushing page to saver processor");
 	tx.send(jobs).expect("Failed to send jobs");
 
 	navigate_next_page(c, tx).await
@@ -76,10 +71,14 @@ async fn navigate_next_page(mut c: Client, tx: Sender<Vec<Job>>) -> FantocciniRe
     match button_next_page_result {
         Ok(element) => {
             element.click().await?;
+			refresh(&mut c).await?;
             process_openings_list_page(c, tx).await?;
 			return Ok(());
         },
         Err(error) => {
+			let url = c.current_url().await?;
+			println!("Cant find next-page button on page {}", url);
+			eprintln!("error: {}", error);
 			return Err(error);
 		}
     }

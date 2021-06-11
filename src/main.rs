@@ -22,8 +22,9 @@ use std::fs::File;
 async fn main() -> Result<(), fantoccini::error::CmdError> {
 
     let args = cli::Cli::parse();
-    let mut c = ClientBuilder::native().connect(args.gecko_server_url.as_str()).await.unwrap();
-    
+    let connection_error_message = format!("Error connecting to webdriver at {}", args.gecko_server_url);
+    let mut c = ClientBuilder::native().connect(args.gecko_server_url.as_str()).await.expect(connection_error_message.as_str());
+
     match process_page(c.clone(), args).await {
         Ok(_) => {
             c.close().await
@@ -34,6 +35,7 @@ async fn main() -> Result<(), fantoccini::error::CmdError> {
         }
     }
 }
+
 
 async fn initial_processing(c: Client, args: Cli) -> FantocciniResult<Client>{
     let c = force_to_ideed_com(c, args.indeed_url.as_str()).await?;
@@ -54,7 +56,7 @@ async fn process_page(c: Client, args: Cli) -> FantocciniResult<()> {
     tokio::spawn(async move {
         process_openings_list_page(c, jobs_sender).await.unwrap();
     });
-    
+
     while let Ok(jobs) = jobs_receiver.recv() {
 
         let file_path = format!("{}/{}.json", output_folder, Uuid::new_v4());

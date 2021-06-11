@@ -1,11 +1,12 @@
 use crate::job_entity::Job;
+use crate::utils::pause;
 use fantoccini::{Client, Locator};
 use crate:: utils::FantocciniResult;
-
 
 const TITLE_SELECTOR: &str = "h1.jobsearch-JobInfoHeader-title";
 const COMPANY_SELECTOR: &str = "div.icl-u-lg-mr--sm.icl-u-xs-mr--xs > a";
 const DESCRIPTION_SELECTOR: &str = "div#jobDescriptionText";
+const SECONDS_TO_PAUSE: u64 = 4;
 
 
 pub async fn process_job_detail_page(c: &mut Client, job_page_link: &str) -> FantocciniResult<Job> {
@@ -19,6 +20,7 @@ pub async fn process_job_detail_page(c: &mut Client, job_page_link: &str) -> Fan
 	let company = load_element(c, COMPANY_SELECTOR).await;
 	let description = load_element(c, DESCRIPTION_SELECTOR).await;
 
+	pause(SECONDS_TO_PAUSE);
 	c.back().await?;
 
 	let job = Job::new(page_url, title, company, description);
