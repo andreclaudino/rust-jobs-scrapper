@@ -2,14 +2,14 @@ use rand::seq::SliceRandom;
 use std::sync::mpsc::Sender;
 
 use fantoccini::{Client, Locator};
-use crate::{job_entity::Job, job_page::process_job_detail_page, utils::{FantocciniResult, refresh}};
+use crate::{job_entity::Job, job_page::process_job_detail_page, utils::{FantocciniResult, pause, refresh}};
 use async_recursion::async_recursion;
 
 const DATEPOST_SELECTOR: &str = r#"button[aria-controls="filter-dateposted-menu"]"#;
 const FILTER_OPTION_SELECTOR: &str = "ul#filter-dateposted-menu > li:first-of-type > a";
 const JOB_OPENING_SELECTOR: &str = "div.jobsearch-SerpJobCard > h2.title > a";
 const NEXT_PAGE_SELECTOR: &str = r#"div.pagination > ul.pagination-list > li:last-child > a"#;
-
+const START_PAGE_PAUSE_TIME: u64 = 5;
 
 pub async fn set_date_filters(c: &mut Client) -> FantocciniResult<()> {
 	c.find(Locator::Css(DATEPOST_SELECTOR)).await?.click().await?;
@@ -47,6 +47,7 @@ pub async fn apply_filters(mut c: Client) -> FantocciniResult<Client> {
 
 #[async_recursion]
 pub async fn process_openings_list_page(mut c: Client, tx: Sender<Vec<Job>>) -> FantocciniResult<()>{
+	pause(START_PAGE_PAUSE_TIME);
     let mut job_page_links = load_opening_titles(&mut c).await?;
 	job_page_links.shuffle(&mut rand::thread_rng());
 
@@ -54,7 +55,8 @@ pub async fn process_openings_list_page(mut c: Client, tx: Sender<Vec<Job>>) -> 
 
     for job_page_link in job_page_links {
         let job = process_job_detail_page(&mut c, job_page_link.as_str()).await?;
-		println!("{:?}", job);
+		let cloned_job = job.clone();
+		println!("job.title = {:?}\njob.company = {:?}\njob.url = {:?}\n\n", cloned_job.title, cloned_job.company, cloned_job.page_url);
 		jobs.push(job);
     }
 
