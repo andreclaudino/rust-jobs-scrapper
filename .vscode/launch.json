@@ -23,9 +23,12 @@
 				"--indeed-url", "https://br.indeed.com/",
 				"--category", "Hotelaria",
 				"--job-title", "Vagas de emprego: Camareira",
-				"--output-folder", "output",
+				"--output-folder", "gs://ml-plat-temporary/indeed-scrapper",
 				"--gecko-server", "http://0.0.0.0:4444"
 			],
+			"env": {
+                "GOOGLE_APPLICATION_CREDENTIALS": "${env:HOME}/.gcloud/ml-team-307117-3487a7e1effd.json",
+			},
 			"cwd": "${workspaceFolder}"
 		},
 		{
