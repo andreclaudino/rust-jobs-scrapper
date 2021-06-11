@@ -75,13 +75,13 @@ async fn navigate_next_page(mut c: Client, tx: Sender<Vec<Job>>) -> FantocciniRe
             element.click().await?;
 			refresh(&mut c).await?;
             process_openings_list_page(c, tx).await?;
-			return Ok(());
         },
         Err(error) => {
 			let url = c.current_url().await?;
 			println!("Cant find next-page button on page {}", url);
 			eprintln!("error: {}", error);
-			return Err(error);
 		}
-    }
+    };
+
+	Ok(())
 }
