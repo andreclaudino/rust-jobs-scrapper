@@ -1,5 +1,5 @@
 [package]
-name = "fantoccini-test"
+name = "indeed-scrapper"
 version = "0.1.0"
 authors = ["André Claudino <claudino@d2x.com.br>"]
 edition = "2018"

@@ -227,22 +227,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "fantoccini-test"
-version = "0.1.0"
-dependencies = [
- "async-recursion",
- "cloud-storage",
- "fantoccini",
- "rand",
- "serde",
- "serde_json",
- "structopt",
- "tokio",
- "url",
- "uuid",
-]
-
-[[package]]
 name = "fnv"
 version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -490,6 +474,22 @@ dependencies = [
  "matches",
  "unicode-bidi",
  "unicode-normalization",
+]
+
+[[package]]
+name = "indeed-scrapper"
+version = "0.1.0"
+dependencies = [
+ "async-recursion",
+ "cloud-storage",
+ "fantoccini",
+ "rand",
+ "serde",
+ "serde_json",
+ "structopt",
+ "tokio",
+ "url",
+ "uuid",
 ]
 
 [[package]]
