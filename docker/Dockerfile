@@ -1,4 +1,4 @@
-FROM blueimp/geckodriver
+FROM ubuntu:20.10
 
 ADD indeed-scrapper /usr/bin/indeed-scrapper
 

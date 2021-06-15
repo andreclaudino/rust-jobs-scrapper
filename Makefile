@@ -5,8 +5,8 @@ ifeq ($(IMAGE_TAG),)
 endif
 
 docker/indeed-scrapper:
-	cargo build --release --target x86_64-unknown-linux-musl
-	mv target/x86_64-unknown-linux-musl/release/indeed-scrapper docker/indeed-scrapper
+	cargo build --release
+	mv target/release/indeed-scrapper docker/indeed-scrapper
 
 docker/image: docker/indeed-scrapper
 	docker build docker -f docker/Dockerfile -t $(IMAGE):$(IMAGE_TAG)

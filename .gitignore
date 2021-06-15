@@ -1,2 +1,6 @@
 target/
 output/
+docker/image
+docker/indeed-scrapper
+docker/push
+docker/push-latest
