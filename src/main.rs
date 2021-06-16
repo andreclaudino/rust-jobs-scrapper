@@ -10,7 +10,7 @@ use serde_json;
 use std::sync::mpsc::channel;
 
 use cli::Cli;
-use fantoccini::{ClientBuilder, Client};
+use fantoccini::{Client, ClientBuilder, Locator};
 use first_navigates::{force_to_ideed_com, load_openings_page, navigate_to_browse_jobs_page, navigate_to_category_page};
 use openings_navigate::{apply_filters, process_openings_list_page};
 use tokio;
@@ -20,6 +20,7 @@ use std::io::Write;
 use std::fs::File;
 
 
+const ACCEPT_COOKIES_SELECTOR : &str = "#onetrust-accept-btn-handler";
 
 #[tokio::main]
 async fn main() -> Result<(), fantoccini::error::CmdError> {
@@ -40,11 +41,23 @@ async fn main() -> Result<(), fantoccini::error::CmdError> {
 }
 
 async fn initial_processing(c: Client, args: &Cli) -> FantocciniResult<Client>{
+    let c = accept_cookies(c).await?;
     let c = force_to_ideed_com(c, args.indeed_url.as_str()).await?;
     let c = navigate_to_browse_jobs_page(c).await?;
     let c = navigate_to_category_page(c, args.category_title.as_str()).await?;
     let c = load_openings_page(c, args.job_title.as_str()).await?;
     let c = apply_filters(c).await?;
+
+    Ok(c)
+}
+
+async fn accept_cookies(mut c: Client) -> FantocciniResult<Client>{
+    match c.find(Locator::Css(ACCEPT_COOKIES_SELECTOR)).await {
+        Ok(button) => {
+            button.click().await?;
+        },
+        Err(_) => {}
+    };
 
     Ok(c)
 }

@@ -10,6 +10,8 @@ const FILTER_OPTION_SELECTOR: &str = "ul#filter-dateposted-menu > li:first-of-ty
 const JOB_OPENING_SELECTOR: &str = "div.jobsearch-SerpJobCard > h2.title > a";
 const NEXT_PAGE_SELECTOR: &str = r#"div.pagination > ul.pagination-list > li:last-child > a"#;
 const START_PAGE_PAUSE_TIME: u64 = 5;
+const APPLY_FILTER_PAUSE_TIME: u64 = 5;
+const CLOSE_POPOVER_SELECTOR: &str = "#popover-x";
 
 pub async fn set_date_filters(c: &mut Client) -> FantocciniResult<()> {
 	c.find(Locator::Css(DATEPOST_SELECTOR)).await?.click().await?;
@@ -40,6 +42,13 @@ pub async fn load_opening_titles(c: &mut Client) -> FantocciniResult<Vec<String>
 
 pub async fn apply_filters(mut c: Client) -> FantocciniResult<Client> {
 	refresh(&mut c).await?;
+	pause(APPLY_FILTER_PAUSE_TIME);
+	match c.find(Locator::Css(CLOSE_POPOVER_SELECTOR)).await {
+		Ok(button) => {
+			button.click().await?;
+		},
+		Err(_) => {}
+	};
     set_date_filters(&mut c).await?;
 
 	Ok(c)
