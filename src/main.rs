@@ -19,6 +19,8 @@ use uuid::Uuid;
 use std::io::Write;
 use std::fs::File;
 
+use crate::utils::pause;
+
 
 const ACCEPT_COOKIES_SELECTOR : &str = "#onetrust-accept-btn-handler";
 
@@ -26,8 +28,7 @@ const ACCEPT_COOKIES_SELECTOR : &str = "#onetrust-accept-btn-handler";
 async fn main() -> Result<(), fantoccini::error::CmdError> {
 
     let args = cli::Cli::parse();
-    let connection_error_message = format!("Error connecting to webdriver at {}", args.gecko_server_url);
-    let mut c = ClientBuilder::native().connect(args.gecko_server_url.as_str()).await.expect(connection_error_message.as_str());
+    let mut c = connect(&args).await;
 
     match process_page(c.clone(), args).await {
         Ok(_) => {
@@ -38,6 +39,24 @@ async fn main() -> Result<(), fantoccini::error::CmdError> {
             c.close().await
         }
     }
+}
+
+async fn connect(args: &cli::Cli) -> Client {
+    let connection_error_message = format!("Error connecting to webdriver at {}", args.gecko_server_url);
+    for left_retries in (0..args.max_connection_retries).rev() {
+        let connection_result = ClientBuilder::native().connect(args.gecko_server_url.as_str()).await;
+        if connection_result.is_err() {
+            println!("Failed while connecting to {}. Retrying in {} seconds ({} retries left)", args.gecko_server_url, args.connection_retry_timeout, left_retries);
+            pause(args.connection_retry_timeout);
+            continue;
+        } else {
+            println!("Connection suceeded");
+            return connection_result.unwrap();
+        }
+    }
+
+    panic!(connection_error_message);
+
 }
 
 async fn initial_processing(c: Client, args: &Cli) -> FantocciniResult<Client>{
