@@ -6,7 +6,7 @@ const DEFAULT_INDEED_URL: &str = "https://www.indeed.com/";
 #[structopt(name = "scrap-indeed")]
 pub struct Cli {
 
-	#[structopt(long="gecko-server")]
+	#[structopt(long="gecko-server", default_value="http://0.0.0.0:4444")]
 	pub gecko_server_url: String,
 
 	#[structopt(long="category")]
