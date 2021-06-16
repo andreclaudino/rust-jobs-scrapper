@@ -7,22 +7,22 @@
 		{
 			"type": "lldb",
 			"request": "launch",
-			"name": "Debug executable 'fantoccini-test'",
+			"name": "Debug executable 'indeed-scrapper'",
 			"cargo": {
 				"args": [
 					"build",
-					"--bin=fantoccini-test",
-					"--package=fantoccini-test"
+					"--bin=indeed-scrapper",
+					"--package=indeed-scrapper"
 				],
 				"filter": {
-					"name": "fantoccini-test",
+					"name": "indeed-scrapper",
 					"kind": "bin"
 				}
 			},
 			"args": [
 				"--indeed-url", "https://br.indeed.com/",
-				"--category", "Hotelaria",
-				"--job-title", "Vagas de emprego: Camareira",
+				"--category", "Artes",
+				"--job-title", "Vagas de emprego: Arte Finalista",
 				"--output-folder", "gs://ml-plat-temporary/indeed-scrapper",
 				"--gecko-server", "http://0.0.0.0:4444"
 			],
@@ -34,16 +34,16 @@
 		{
 			"type": "lldb",
 			"request": "launch",
-			"name": "Debug unit tests in executable 'fantoccini-test'",
+			"name": "Debug unit tests in executable 'indeed-scrapper'",
 			"cargo": {
 				"args": [
 					"test",
 					"--no-run",
-					"--bin=fantoccini-test",
-					"--package=fantoccini-test"
+					"--bin=indeed-scrapper",
+					"--package=indeed-scrapper"
 				],
 				"filter": {
-					"name": "fantoccini-test",
+					"name": "indeed-scrapper",
 					"kind": "bin"
 				}
 			},
