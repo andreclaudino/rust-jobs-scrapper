@@ -22,6 +22,12 @@ pub struct Cli {
 				default_value=DEFAULT_INDEED_URL)]
 	pub indeed_url: String,
 
+	#[structopt(long="max-connection-retries", default_value="10")]
+	pub max_connection_retries: usize,
+
+	#[structopt(long="connection-retries-sleep-time", default_value="10")]
+	pub connection_retry_timeout: u64,
+
 }
 
 impl Cli {
