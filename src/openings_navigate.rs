@@ -12,6 +12,7 @@ const NEXT_PAGE_SELECTOR: &str = r#"div.pagination > ul.pagination-list > li:las
 const START_PAGE_PAUSE_TIME: u64 = 5;
 const APPLY_FILTER_PAUSE_TIME: u64 = 5;
 const CLOSE_POPOVER_SELECTOR: &str = "#popover-x";
+const DEDUPLICATE_BUTTON: &str = "p.dupetext > a";
 
 pub async fn set_date_filters(c: &mut Client) -> FantocciniResult<()> {
 	c.find(Locator::Css(DATEPOST_SELECTOR)).await?.click().await?;
@@ -87,8 +88,18 @@ async fn navigate_next_page(mut c: Client, tx: Sender<Vec<Job>>) -> FantocciniRe
         },
         Err(error) => {
 			let url = c.current_url().await?;
-			println!("Cant find next-page button on page {}", url);
-			eprintln!("error: {}", error);
+			println!("Can't find next-page button on page {}. Message: {}", url, error);
+
+			println!("Looking for deduplication button");
+			match c.find(Locator::Css(DEDUPLICATE_BUTTON)).await {
+				Ok(element) => {
+					element.click().await?;
+            		navigate_next_page(c, tx);
+				},
+				Err(error) => {
+					println!("Can't look for next page and can't find deduplicate button. Finished! Message: {}", error);
+				}
+			};
 		}
     };
 

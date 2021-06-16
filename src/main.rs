@@ -21,7 +21,6 @@ use std::fs::File;
 
 use crate::utils::pause;
 
-
 const ACCEPT_COOKIES_SELECTOR : &str = "#onetrust-accept-btn-handler";
 
 #[tokio::main]
